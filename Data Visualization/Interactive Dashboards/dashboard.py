@@ -3,11 +3,11 @@ from dash import dcc, html, Input, Output
 import plotly.express as px
 import pandas as pd
 
-# Load datasets
+#Load datasets
 mobile_df = pd.read_csv('mobile_addiction_cleaned (1).csv')
 behavior_df = pd.read_csv('user_behavior_dataset (2).csv')
 
-# Text style
+#Text style
 title_style_main = {
     'textAlign': 'center',
     'fontFamily': 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
@@ -27,25 +27,25 @@ title_style_section = {
     'marginBottom': '15px',
 }
 
-# Group ages into 5-year intervals for User Behavior
+#Group ages into 5-year intervals for User Behavior
 age_bins = list(range(int(behavior_df['Age'].min() // 5 * 5), int(behavior_df['Age'].max()) + 5, 5))
 age_labels = [f"{age_bins[i]}–{age_bins[i + 1] - 1}" for i in range(len(age_bins) - 1)]
 behavior_df['Age_Group'] = pd.cut(behavior_df['Age'], bins=age_bins, labels=age_labels, right=False)
 
-# Group ages into 5-year intervals for Mobile Addiction
+#Group ages into 5-year intervals for Mobile Addiction
 age_bins_mobile = list(range(int(mobile_df['age'].min() // 5 * 5), int(mobile_df['age'].max()) + 5, 5))
 age_labels_mobile = [f"{age_bins_mobile[i]}–{age_bins_mobile[i + 1] - 1}" for i in range(len(age_bins_mobile) - 1)]
 mobile_df['Age_Group'] = pd.cut(mobile_df['age'], bins=age_bins_mobile, labels=age_labels_mobile, right=False)
 
-# Initialize app
+#Initialize app
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
 app.title = "Mobile Usage Dashboard"
 
-# Layout
+#Layout
 app.layout = html.Div([
     html.H1("Interactive Mobile Usage Dashboard", style=title_style_main),
     dcc.Tabs([
-        # 🟦 Layout: Mobile Addiction Tab
+        #Mobile Addiction Tab
         dcc.Tab(label='Mobile Addiction',style=title_style_section,children=[
             html.Div([
                 html.Label("Select Age Group (5-year intervals):", style=title_style_section),
@@ -67,7 +67,7 @@ app.layout = html.Div([
             ])
         ]),
 
-        # User Behavior Tab
+        #User Behavior Tab
         dcc.Tab(label='User Behavior', style=title_style_section, children=[
             html.Div([
                 html.Label("Select Age Group (5-year intervals):", style=title_style_section),
@@ -98,7 +98,7 @@ app.layout = html.Div([
     ])
 ])
 
-# Callback for User Behavior main graph
+#Callback for User Behavior main graph
 @app.callback(
     Output('ub-graph', 'figure'),
     Input('age-dropdown-ub', 'value'),
@@ -121,7 +121,7 @@ def update_user_behavior(selected_age_groups, selected_genders):
     )
     return fig
 
-# Callback for App Usage Time by Age Group
+#Callback for App Usage Time by Age Group
 @app.callback(
     Output('app-usage-bar', 'figure'),
     Input('age-dropdown-ub', 'value')
@@ -142,7 +142,7 @@ def update_app_usage_bar(selected_age_groups):
     )
     return fig
 
-# Callback for Behavior Class Feature Bar Chart
+#Callback for Behavior Class Feature Bar Chart
 @app.callback(
     Output('behavior-class-bar', 'figure'),
     Input('age-dropdown-ub', 'value'),
@@ -170,7 +170,7 @@ def update_behavior_class_bar(selected_age_groups):
     )
     return fig
 
-# 🟧 Scatter Plot: Notifications vs. Stress Level
+#Scatter Plot for Notifications vs. Stress Level
 @app.callback(
     Output('ma-scatter-notification-stress', 'figure'),
     Input('age-dropdown-ma', 'value')
@@ -188,7 +188,7 @@ def update_notification_vs_stress(selected_age_groups):
     )
     return fig
 
-# 🟩 Bar Plot: Average Social Media Usage by Addiction Status
+#Bar Plot for Average Social Media Usage by Addiction Status
 @app.callback(
     Output('ma-bar-socialmedia-addiction', 'figure'),
     Input('age-dropdown-ma', 'value')
@@ -208,7 +208,7 @@ def update_avg_socialmedia_addiction(selected_age_groups):
     )
     return fig
 
-# 🟨 Scatter Plot: Daily Screen Time vs. Stress Level
+#Scatter Plot for Daily Screen Time vs. Stress Level
 @app.callback(
     Output('ma-scatter-screentime-stress', 'figure'),
     Input('age-dropdown-ma', 'value')
